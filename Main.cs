@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace UndeadLegacy_xorbit
+namespace Localization_Editor
 {
     public partial class Main : Form
     {
