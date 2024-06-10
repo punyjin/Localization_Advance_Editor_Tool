@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 
-namespace UndeadLegacy_xorbit
+namespace Localization_Editor
 {
     public static class ResourceData
     {
