@@ -7,8 +7,8 @@ namespace Localization_Editor
 {
     public static class ResourceData
     {
-        private static readonly string UeHex = "3001DA2676B9F3AB06AE32FD34DF4EACC789659950B720B5153E4B99A7F3978F";
-        private static readonly string ivHex = "53F735D97B8A2943D5EDC1F7B50AB130";
+        private static readonly string UeHex = "Your Key";
+        private static readonly string ivHex = "Your Key IV";
         public static readonly byte[] Unity = ConvertHexStringToByteArray(UeHex);
         public static readonly byte[] IV = ConvertHexStringToByteArray(ivHex);
 

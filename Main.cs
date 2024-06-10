@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ namespace Localization_Editor
 {
     public partial class Main : Form
     {
+		// ค่า Hex สำหรับการเข้ารหัสและการถอดรหัส
         private static readonly string UeHex = "3001DA2676B9F3AB06AE32FD34DF4EACC789659950B720B5153E4B99A7F3978F";
         private static readonly string ivHex = "53F735D97B8A2943D5EDC1F7B50AB130";
         public static readonly byte[] Unity = ConvertHexStringToByteArray(UeHex);
@@ -16,23 +18,27 @@ namespace Localization_Editor
         public Main()
         {
             InitializeComponent();
+            InitializeContextMenu();
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
         }
+
         private void Main_Resize(object sender, EventArgs e)
         {
-            // ปรับขนาดของ object ใน Form เมื่อ Form ถูก Resize
-            button1.Width = this.Width / 2; // ปรับขนาดความกว้างของ button1 เป็นครึ่งของความกว้างของ Form
-            button1.Height = this.Height / 2; // ปรับขนาดความสูงของ button1 เป็นครึ่งของความสูงของ Form
+			// ปรับขนาดของ button1 ตามขนาดของ Form
+            button1.Width = this.Width / 2;
+            button1.Height = this.Height / 2;
         }
+
         private static byte[] ConvertHexStringToByteArray(string hexString)
         {
             int length = hexString.Length;
             byte[] bytes = new byte[length / 2];
             for (int i = 0; i < length; i += 2)
             {
+				// แปลง hex string เป็น byte array
                 bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
             }
             return bytes;
@@ -40,9 +46,9 @@ namespace Localization_Editor
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            Export_Raw_Data();
-
+            Export_Raw_Data(); //เรียกใช้ฟังชั่น Export
         }
+
         public void Export_Raw_Data()
         {
             if (dataGridView1.Rows.Count == 0)
@@ -60,6 +66,7 @@ namespace Localization_Editor
                 MessageBox.Show("Decrypted File exported successfully!");
             }
         }
+
         public void Export_Encrypted_Data()
         {
             if (dataGridView1.Rows.Count == 0)
@@ -77,30 +84,31 @@ namespace Localization_Editor
                 MessageBox.Show("File exported successfully!");
             }
         }
+
         public void CallImpprtFileDialog()
         {
-            ClearColumns();
             string filePath = ResourceData.ImportFile();
             if (!string.IsNullOrEmpty(filePath))
             {
                 byte[] encryptedBytes = File.ReadAllBytes(filePath);
                 string decryptedText = ResourceData.GetDataInGame.DecryptStringFromBytes_SEQ(encryptedBytes, Unity, IV);
-
-                // ตรวจสอบว่าไฟล์ถูกเข้ารหัสหรือไม่
-                if (!string.IsNullOrEmpty(decryptedText) && IsEncryptedFile(decryptedText))
+                if (!string.IsNullOrEmpty(decryptedText) && IsEncryptedFile(decryptedText)) // ตรวจสอบว่าไฟล์ถูกเข้ารหัสหรือไม่
                 {
-                    // ถ้าไฟล์ถูกเข้ารหัสให้แสดงข้อมูลในตาราง
+					// แสดงข้อมูลที่ถอดรหัสในตาราง
+					ClearColumns();
                     DisplayCSV(decryptedText);
                     richTextBox1.Text = filePath;
                 }
-                else
+                else //ถ้าไฟล์ไม่ถูกเข้ารหัสจะไม่ทำการถอดรหัสและจะส่งเข้าโปรแกรมทันที
                 {
-                    // ถ้าไฟล์ไม่ถูกเข้ารหัสให้แสดงข้อมูลในไฟล์ตรงไปยังตาราง
+					// แสดงข้อมูลในไฟล์ที่ไม่ได้เข้ารหัส
+					ClearColumns();
                     DisplayTextFile(filePath);
                     richTextBox1.Text = filePath;
                 }
             }
         }
+
         private void btnReload_Click(object sender, EventArgs e)
         {
             Export_Encrypted_Data();
@@ -113,7 +121,7 @@ namespace Localization_Editor
 
         private bool IsEncryptedFile(string decryptedText)
         {
-            // ในกรณีที่ข้อมูลถูกเข้ารหัส ข้อมูลที่ถูกถอดรหัสจะไม่เป็นว่าง
+            // ในกรณีที่ข้อมูลถูกเข้ารหัส ข้อมูลที่ถูกถอดรหัสจะไม่ = null
             return !string.IsNullOrWhiteSpace(decryptedText);
         }
 
@@ -127,8 +135,7 @@ namespace Localization_Editor
         {
             string csv = "";
             int columnsCount = dataGridView1.Columns.Count;
-
-            // Include headers in the CSV string
+            // นำเข้า ส่วน headers ใน String CSV
             for (int i = 0; i < columnsCount; i++)
             {
                 csv += dataGridView1.Columns[i].HeaderText;
@@ -138,8 +145,7 @@ namespace Localization_Editor
                 }
             }
             csv += "\n";
-
-            // Include row data in the CSV string
+            // นำเข้าข้อมูลของแถวใน String CSV
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 if (!row.IsNewRow)
@@ -160,8 +166,10 @@ namespace Localization_Editor
 
         private void ClearColumns()
         {
+            // ล้างคอลัมน์ในตาราง
             dataGridView1.Columns.Clear();
         }
+
         private void DisplayCSV(string csvData)
         {
             string[] rows = csvData.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -170,6 +178,7 @@ namespace Localization_Editor
                 string[] headers = rows[0].Split(',');
                 foreach (string header in headers)
                 {
+                    // เพิ่มคอลัมน์ตาม headers
                     dataGridView1.Columns.Add(header, header);
                 }
 
@@ -177,11 +186,11 @@ namespace Localization_Editor
                 {
                     if (!string.IsNullOrWhiteSpace(rows[i]))
                     {
+                        // เพิ่มแถวในตารางตามข้อมูล
                         dataGridView1.Rows.Add(rows[i].Split(','));
                     }
                 }
             }
-
             // ตั้งค่า AutoSizeColumnsMode เป็น Fill
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
@@ -198,6 +207,7 @@ namespace Localization_Editor
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // About Me
             DateTime DateT = DateTime.Now;
             var StbDateT = DateT.ToString("MM/dd/yyyy");
             MessageBox.Show("EN: This program was created by xorbit256 for the purpose of Study programming in c# language and experiment with real users.\r\n" +
@@ -208,16 +218,19 @@ namespace Localization_Editor
 
         private void TSMI_Exit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Application.Exit(); // ปิดโปรแกรม
         }
+
         private void TSMI_Save_Encrypted_Click(object sender, EventArgs e)
         {
             Export_Encrypted_Data();
         }
+
         private void TSMI_Open_Click(object sender, EventArgs e)
         {
             CallImpprtFileDialog();
         }
+
         private void TSMI_HEX_COLOR_Click(object sender, EventArgs e)
         {
             if (Application.OpenForms.OfType<Hex_Color_Menu>().Count() == 1)
@@ -242,6 +255,50 @@ namespace Localization_Editor
                 Application.OpenForms.OfType<Helper>().First().Close();
             var fGESEditor_User_client_interface_entry = new Helper();
             fGESEditor_User_client_interface_entry.Show();
+        }
+
+        private void InitializeContextMenu() // เพิ่ม ContextMenu ที่สามารถคลิ๊กขวาแล้วเลือกสี HEX ได้
+        {
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ToolStripMenuItem insertHexColorMenuItem = new ToolStripMenuItem("Insert HEX Color");
+            insertHexColorMenuItem.Click += new EventHandler(InsertHexColorMenuItem_Click);
+            contextMenu.Items.Add(insertHexColorMenuItem);
+            dataGridView1.ContextMenuStrip = contextMenu;
+            dataGridView1.MouseDown += DataGridView1_MouseDown;
+        }
+
+        private void DataGridView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var hitTestInfo = dataGridView1.HitTest(e.X, e.Y);
+                if (hitTestInfo.Type == DataGridViewHitTestType.Cell)
+                {
+                    // เลือกเซลล์เมื่อคลิ๊กขวา
+                    dataGridView1.ClearSelection();
+                    dataGridView1[hitTestInfo.ColumnIndex, hitTestInfo.RowIndex].Selected = true;
+                }
+            }
+        }
+
+        private void InsertHexColorMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedCells.Count > 0)
+            {
+                DataGridViewCell selectedCell = dataGridView1.SelectedCells[0];
+                using (ColorDialog colorDialog = new ColorDialog())
+                {
+                    if (colorDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        Color color = colorDialog.Color;
+                        string hexColor = ColorTranslator.ToHtml(color);
+                        // แทรก hex color ลงในค่าปัจจุบันของเซลล์
+                        string currentValue = selectedCell.Value?.ToString() ?? string.Empty;
+                        string newValue = $"{currentValue}[{hexColor}] [-]";
+                        selectedCell.Value = newValue;
+                    }
+                }
+            }
         }
     }
 }
