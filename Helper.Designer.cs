@@ -1,4 +1,4 @@
-﻿namespace UndeadLegacy_xorbit
+﻿namespace Localization_Editor
 {
     partial class Helper
     {
