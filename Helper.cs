@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace UndeadLegacy_xorbit
+namespace Localization_Editor
 {
     public partial class Helper : Form
     {
