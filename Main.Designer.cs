@@ -35,7 +35,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnReload = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.CMS = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.TSMI_Open = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,8 +54,8 @@
             this.TSMI_HEX_COLOR = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMI_Ingame_Input = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMI_XML_FILE_LOADER = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMI_Helper = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.CMS.SuspendLayout();
@@ -65,17 +64,19 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1037, 469);
+            this.button1.AutoSize = true;
+            this.button1.Location = new System.Drawing.Point(935, 498);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(102, 50);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Export";
+            this.button1.Text = "Export Encrypt";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.btnReload_Click);
             // 
             // btnLoadFile
             // 
-            this.btnLoadFile.Location = new System.Drawing.Point(929, 469);
+            this.btnLoadFile.AutoSize = true;
+            this.btnLoadFile.Location = new System.Drawing.Point(1043, 498);
             this.btnLoadFile.Name = "btnLoadFile";
             this.btnLoadFile.Size = new System.Drawing.Size(102, 50);
             this.btnLoadFile.TabIndex = 1;
@@ -88,7 +89,7 @@
             this.groupBox1.Controls.Add(this.dataGridView1);
             this.groupBox1.Location = new System.Drawing.Point(12, 28);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1133, 435);
+            this.groupBox1.Size = new System.Drawing.Size(1133, 464);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Localization";
@@ -99,12 +100,13 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(6, 19);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(1121, 426);
+            this.dataGridView1.Size = new System.Drawing.Size(1121, 439);
             this.dataGridView1.TabIndex = 4;
             // 
             // btnReload
             // 
-            this.btnReload.Location = new System.Drawing.Point(821, 469);
+            this.btnReload.AutoSize = true;
+            this.btnReload.Location = new System.Drawing.Point(827, 498);
             this.btnReload.Name = "btnReload";
             this.btnReload.Size = new System.Drawing.Size(102, 50);
             this.btnReload.TabIndex = 1;
@@ -112,19 +114,9 @@
             this.btnReload.UseVisualStyleBackColor = true;
             this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(371, 472);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 49);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Import";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(18, 472);
+            this.richTextBox1.Location = new System.Drawing.Point(18, 498);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(347, 47);
             this.richTextBox1.TabIndex = 5;
@@ -225,14 +217,14 @@
             // TSMI_Save_Encrypted
             // 
             this.TSMI_Save_Encrypted.Name = "TSMI_Save_Encrypted";
-            this.TSMI_Save_Encrypted.Size = new System.Drawing.Size(169, 22);
+            this.TSMI_Save_Encrypted.Size = new System.Drawing.Size(180, 22);
             this.TSMI_Save_Encrypted.Text = "Save as Encrypted";
             this.TSMI_Save_Encrypted.Click += new System.EventHandler(this.TSMI_Save_Encrypted_Click);
             // 
             // TSMI_Save_Decrypted
             // 
             this.TSMI_Save_Decrypted.Name = "TSMI_Save_Decrypted";
-            this.TSMI_Save_Decrypted.Size = new System.Drawing.Size(169, 22);
+            this.TSMI_Save_Decrypted.Size = new System.Drawing.Size(180, 22);
             this.TSMI_Save_Decrypted.Text = "Save as Decrypted";
             this.TSMI_Save_Decrypted.Click += new System.EventHandler(this.TSMI_Save_Decrypted_Click);
             // 
@@ -267,13 +259,6 @@
             this.TSMI_XML_FILE_LOADER.Text = "XML File Menu";
             this.TSMI_XML_FILE_LOADER.Click += new System.EventHandler(this.TSMI_XML_FILE_LOADER_Click);
             // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             // TSMI_Helper
             // 
             this.TSMI_Helper.Name = "TSMI_Helper";
@@ -281,20 +266,29 @@
             this.TSMI_Helper.Text = "Help";
             this.TSMI_Helper.Click += new System.EventHandler(this.TSMI_Helper_Click);
             // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1157, 531);
+            this.ClientSize = new System.Drawing.Size(1157, 555);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnReload);
             this.Controls.Add(this.btnLoadFile);
             this.Controls.Add(this.button1);
+            this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1173, 594);
+            this.MinimumSize = new System.Drawing.Size(1173, 594);
             this.Name = "Main";
             this.Text = "7DayToDie - Localization editor";
             this.Load += new System.EventHandler(this.Main_Load);
@@ -315,7 +309,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnReload;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.ContextMenuStrip CMS;
         private System.Windows.Forms.ToolStripMenuItem TSMI_Open;

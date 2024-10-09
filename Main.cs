@@ -9,9 +9,9 @@ namespace Localization_Editor
 {
     public partial class Main : Form
     {
-		// ค่า Hex สำหรับการเข้ารหัสและการถอดรหัส
-        private static readonly string UeHex = "Your Key";
-        private static readonly string ivHex = "Your Key IV";
+        // ค่า Hex สำหรับการเข้ารหัสและการถอดรหัส
+        private static readonly string UeHex = "3001DA2676B9F3AB06AE32FD34DF4EACC789659950B720B5153E4B99A7F3978F";
+        private static readonly string ivHex = "53F735D97B8A2943D5EDC1F7B50AB130";
         public static readonly byte[] Unity = ConvertHexStringToByteArray(UeHex);
         public static readonly byte[] IV = ConvertHexStringToByteArray(ivHex);
 
@@ -19,6 +19,7 @@ namespace Localization_Editor
         {
             InitializeComponent();
             InitializeContextMenu();
+            SetupControls();
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -27,7 +28,7 @@ namespace Localization_Editor
 
         private void Main_Resize(object sender, EventArgs e)
         {
-			// ปรับขนาดของ button1 ตามขนาดของ Form
+            // ปรับขนาดของ button1 ตามขนาดของ Form
             button1.Width = this.Width / 2;
             button1.Height = this.Height / 2;
         }
@@ -38,7 +39,7 @@ namespace Localization_Editor
             byte[] bytes = new byte[length / 2];
             for (int i = 0; i < length; i += 2)
             {
-				// แปลง hex string เป็น byte array
+                // แปลง hex string เป็น byte array
                 bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
             }
             return bytes;
@@ -46,7 +47,7 @@ namespace Localization_Editor
 
         private void btnLoadFile_Click(object sender, EventArgs e)
         {
-            Export_Raw_Data(); //เรียกใช้ฟังชั่น Export
+            Export_Raw_Data(); // เรียกใช้ฟังชั่น Export
         }
 
         public void Export_Raw_Data()
@@ -63,7 +64,7 @@ namespace Localization_Editor
                 string filePath = saveFileDialog.FileName;
                 string csvString = GetCSVString();
                 File.WriteAllText(filePath, csvString);
-                MessageBox.Show("Decrypted File exported successfully!");
+                MessageBox.Show("File exported successfully!");
             }
         }
 
@@ -81,7 +82,7 @@ namespace Localization_Editor
                 string filePath = saveFileDialog.FileName;
                 byte[] encryptedBytes = ResourceData.GetDataInGame.EncryptStringToBytes_SEQ(GetCSVString(), Unity, IV);
                 File.WriteAllBytes(filePath, encryptedBytes);
-                MessageBox.Show("File exported successfully!");
+                MessageBox.Show("Encrypt File exported successfully!");
             }
         }
 
@@ -94,15 +95,15 @@ namespace Localization_Editor
                 string decryptedText = ResourceData.GetDataInGame.DecryptStringFromBytes_SEQ(encryptedBytes, Unity, IV);
                 if (!string.IsNullOrEmpty(decryptedText) && IsEncryptedFile(decryptedText)) // ตรวจสอบว่าไฟล์ถูกเข้ารหัสหรือไม่
                 {
-					// แสดงข้อมูลที่ถอดรหัสในตาราง
-					ClearColumns();
+                    // แสดงข้อมูลที่ถอดรหัสในตาราง
+                    ClearColumns();
                     DisplayCSV(decryptedText);
                     richTextBox1.Text = filePath;
                 }
-                else //ถ้าไฟล์ไม่ถูกเข้ารหัสจะไม่ทำการถอดรหัสและจะส่งเข้าโปรแกรมทันที
+                else // ถ้าไฟล์ไม่ถูกเข้ารหัสจะไม่ทำการถอดรหัสและจะส่งเข้าโปรแกรมทันที
                 {
-					// แสดงข้อมูลในไฟล์ที่ไม่ได้เข้ารหัส
-					ClearColumns();
+                    // แสดงข้อมูลในไฟล์ที่ไม่ได้เข้ารหัส
+                    ClearColumns();
                     DisplayTextFile(filePath);
                     richTextBox1.Text = filePath;
                 }
@@ -135,24 +136,36 @@ namespace Localization_Editor
         {
             string csv = "";
             int columnsCount = dataGridView1.Columns.Count;
-            // นำเข้า ส่วน headers ใน String CSV
+
+            // นำเข้า ส่วน headers ใน String CSV โดยไม่มีเครื่องหมาย ""
             for (int i = 0; i < columnsCount; i++)
             {
-                csv += dataGridView1.Columns[i].HeaderText;
+                csv += dataGridView1.Columns[i].HeaderText;  // ไม่มีเครื่องหมาย " สำหรับ headers
                 if (i < columnsCount - 1)
                 {
                     csv += ",";
                 }
             }
             csv += "\n";
-            // นำเข้าข้อมูลของแถวใน String CSV
+
+            // นำเข้าข้อมูลของแถวใน String CSV โดยช่องแรกไม่มี "" และช่องอื่นๆ มี ""
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 if (!row.IsNewRow)
                 {
                     for (int i = 0; i < columnsCount; i++)
                     {
-                        csv += row.Cells[i].Value;
+                        if (i == 0)
+                        {
+                            // ช่องแรกไม่มีเครื่องหมาย ""
+                            csv += row.Cells[i].Value?.ToString();
+                        }
+                        else
+                        {
+                            // ช่องถัดไปมีเครื่องหมาย "" รอบข้อมูล
+                            csv += "\"" + row.Cells[i].Value?.ToString() + "\"";
+                        }
+
                         if (i < columnsCount - 1)
                         {
                             csv += ",";
@@ -161,8 +174,10 @@ namespace Localization_Editor
                     csv += "\n";
                 }
             }
+
             return csv;
         }
+
 
         private void ClearColumns()
         {
@@ -172,7 +187,8 @@ namespace Localization_Editor
 
         private void DisplayCSV(string csvData)
         {
-            string[] rows = csvData.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string[] rows = csvData.Replace("\"", "").Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
             if (rows.Length > 0)
             {
                 string[] headers = rows[0].Split(',');
@@ -195,10 +211,7 @@ namespace Localization_Editor
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            CallImpprtFileDialog();
-        }
+        
 
         private void TSMI_Save_Decrypted_Click(object sender, EventArgs e)
         {
@@ -291,7 +304,7 @@ namespace Localization_Editor
                     if (colorDialog.ShowDialog() == DialogResult.OK)
                     {
                         Color color = colorDialog.Color;
-                        string hexColor = ColorTranslator.ToHtml(color);
+                        string hexColor = ColorTranslator.ToHtml(color).Substring(1);
                         // แทรก hex color ลงในค่าปัจจุบันของเซลล์
                         string currentValue = selectedCell.Value?.ToString() ?? string.Empty;
                         string newValue = $"{currentValue}[{hexColor}] [-]";
@@ -299,6 +312,18 @@ namespace Localization_Editor
                     }
                 }
             }
+        }
+
+        private void SetupControls()
+        {
+            // ตั้งค่า Dock สำหรับ DataGridView
+            dataGridView1.Dock = DockStyle.Fill;
+
+            // ตั้งค่า Anchor สำหรับปุ่ม
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnLoadFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            // เพิ่มปุ่มอื่นๆ ตามต้องการ
         }
     }
 }
